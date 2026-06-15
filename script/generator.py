@@ -31,7 +31,7 @@ rng = np.random.default_rng(SEED)
 # HELPER FUNCS
 
 def clamp_rating(values):
-    return np.round(np.clip(values, 1.0, 5.0), 1)
+    return np.clip(values, 1.0, 5.0)
 
 def generate_driver_ids(n):
     return np.array([f'DRV{100000+i}' for i in range(n)])
@@ -58,6 +58,9 @@ def generate_drivers(n:int) -> pd.DataFrame:
     # samples for the params below are drawn from a beta distribution 
     service_quality = rng.beta(8, 2, size=n)
     efficiency = rng.beta(7, 3, size=n)
+    friendliness = rng.beta(8, 2, size=n)
+    carefulness = rng.beta(8, 2, size=n)
+    communication = rng.beta(8, 2, size=n)
 
     traffic_violations = rng.choice(
         [0, 1, 2, 3, 4, 5, 6, 7, 8], 
@@ -76,6 +79,9 @@ def generate_drivers(n:int) -> pd.DataFrame:
         'driver_id':driver_ids,
         'service_quality':service_quality,
         'efficiency':efficiency,
+        'friendliness':friendliness,
+        'carefulness':carefulness,
+        'communication':communication,
         'traffic_violations':traffic_violations,
         'accident_cases':accident_cases
     })
@@ -230,14 +236,31 @@ def generate_chunk(chunk_start:int, chunk_size: int, drivers: pd.DataFrame, weat
 
     service_quality = driver_sample['service_quality'].to_numpy()
 
-    # a base rating calculated using the internal service_quality parameter
-    # this works by assuming most drivers get a good rating across all aspects and
-    # then adding Gaussian noise for variation
-    rating_base = 3.2 + service_quality*1.7
+    friendliness = driver_sample["friendliness"].to_numpy()
+    carefulness = driver_sample["carefulness"].to_numpy()
+    communication = driver_sample["communication"].to_numpy()
 
-    attitude = rating_base + rng.normal(0, 0.28, chunk_size)
-    pkg_care = rating_base + rng.normal(0, 0.25, chunk_size)
-    responsiveness = rating_base + rng.normal(0, 0.35, chunk_size)
+    # a base rating calculated using the internal parameters above
+    # this works by assuming most drivers have a decent service quality rating
+    # on top of individual personality characteristic scores 
+    # and then adding Gaussian noise for variation
+    rating_base = 3.0 + service_quality*1.3
+
+    attitude = (
+        rating_base 
+        + friendliness * 0.5
+        + rng.normal(0, 0.20, chunk_size)
+    )
+    pkg_care = (
+        rating_base 
+        + carefulness * 0.5
+        + rng.normal(0, 0.25, chunk_size)
+    )
+    responsiveness = (
+        rating_base 
+        + communication * 0.5
+        + rng.normal(0, 0.35, chunk_size)
+    )
 
     # delivery_spd is penalized for every minute late. early deliveries get a small increase
     # driver_efficiency gives a significant boost and random noise is added to reflect customer perceptions
