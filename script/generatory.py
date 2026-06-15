@@ -294,19 +294,56 @@ def generate_chunk(chunk_start:int, chunk_size: int, drivers: pd.DataFrame, weat
 
 
 
+# =========================
+# VALIDATION
+# =========================
+
+def validate_dataset(df):
+    print("\nDATASET SHAPE")
+    print(df.shape)
+
+    print("\nCOLUMNS")
+    print(df.columns.tolist())
+
+    print("\nMISSING VALUES")
+    print(df.isnull().sum())
+
+    print("\nUNIQUE DELIVERY IDS")
+    print(df["delivery_id"].is_unique)
+
+    print("\nDATE RANGE")
+    print(df["date"].min(), "to", df["date"].max())
+
+    print("\nWEATHER DISTRIBUTION")
+    print(df["weather"].value_counts(normalize=True).round(3))
+
+    print("\nTRAFFIC DISTRIBUTION")
+    print(df["traffic_cond"].value_counts(normalize=True).round(3))
+
+    print("\nNUMERIC SUMMARY")
+    print(df.describe())
+
+    print("\nCORRELATIONS")
+    corr_cols = [
+        "arrival_est",
+        "arrival_act",
+        "attitude",
+        "pkg_care",
+        "responsiveness",
+        "delivery_spd"
+    ]
+    print(df[corr_cols].corr().round(3))
+
+    delay = df["arrival_act"] - df["arrival_est"]
+    print("\nDELAY SUMMARY")
+    print(delay.describe().round(2))
+
+    print("\nOUTLIER RATE: delay > 60 minutes")
+    print(round((delay > 60).mean(), 4))
 
 
 
 
-
-
-
-
-
-
-
-
-'''
 def main():
     drivers = generate_drivers(NUM_DRIVERS)
     weather_by_date = generate_weather_lookup()
@@ -333,11 +370,10 @@ def main():
 
     validate_dataset(deliveries)
 
-    deliveries.to_csv(OUTPUT_FILE, index=False)
+    deliveries.to_csv(FILE_OUT, index=False)
 
-    print(f"\nExported final dataset to: {OUTPUT_FILE}")
+    print(f"\nExported final dataset to: {FILE_OUT}")
 
 
 if __name__ == "__main__":
     main()
-'''
