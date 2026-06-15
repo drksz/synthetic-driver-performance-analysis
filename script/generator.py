@@ -19,7 +19,7 @@ SEED = 42
 DATE_START = "2026-01-01"
 DATE_END = "2026-06-01"
 
-FILE_OUT = "data/deliveries.csv"
+FILE_OUT = "data/driver-deliveries.csv"
 
 
 import pandas as pd
@@ -37,7 +37,7 @@ def generate_driver_ids(n):
     return np.array([f'DRV{100000+i}' for i in range(n)])
 
 def generate_delivery_ids(start, n):
-    return np.array([f'DEL{start+i}' for i in range(n)])
+    return np.array([f'DEL{start+i:06d}' for i in range(n)])
 
 
 '''
