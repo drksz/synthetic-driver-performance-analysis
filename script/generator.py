@@ -239,7 +239,7 @@ def generate_chunk(chunk_start:int, chunk_size: int, drivers: pd.DataFrame, weat
         * priority_multiplier
     )
 
-    arrival_est = np.round(np.clip(arrival_est, 8, 240)).astype(int)
+    arrival_est = np.round(np.clip(arrival_est, 8, 140)).astype(int)
 
     driver_efficiency = driver_sample['efficiency'].to_numpy()
     violations = driver_sample['traffic_violations'].to_numpy()
@@ -278,7 +278,7 @@ def generate_chunk(chunk_start:int, chunk_size: int, drivers: pd.DataFrame, weat
     )
 
     arrival_act = arrival_est + np.round(delay).astype(int)
-    arrival_act = np.clip(arrival_act, 5, 400)
+    arrival_act = np.clip(arrival_act, 5, 240)
 
 
     idle_base = rng.gamma(
