@@ -8,57 +8,68 @@ const API_BASE = "http://127.0.0.1:8000/api";
 export default function DashboardPage() {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+    const [startDate, setStartDate] = useState("2026-01-01");
+    const [endDate, setEndDate] = useState("2026-06-01");
+    const [traffic, setTraffic] = useState("");
+    const[priority, setPriority] = useState("");
 
-    useEffect(() => {
-        async function fetchDashboardData() {
-            try {
-                const endpoints = [
-                    "kpis",
-                    "weather-stats",
-                    "vehicle-stats",
-                    "priority-stats",
-                    "weekday-delay",
-                    "week-total-delay",
-                    "month-total-delay",
-                    "rating-summary",
-                ];
+    async function fetchDashboardData() {
+        try {
 
-                const responses = await Promise.all(
-                    endpoints.map((endpoint) => fetch(`${API_BASE}/${endpoint}`))
-                );
+            const query = new URLSearchParams({
+                start_date: startDate,
+                end_date: endDate,
+                traffic,
+                priority,
+            });
 
-                for (const res of responses) {
-                    if (!res.ok) throw new Error("Failed to fetch dashboard data");
-                }
+            const endpoints = [
+                "kpis",
+                "weather-stats",
+                "vehicle-stats",
+                "priority-stats",
+                "weekday-delay",
+                "week-total-delay",
+                "month-total-delay",
+                "rating-summary",
+            ];
 
-                const [
-                    kpis,
-                    weatherStats,
-                    vehicleStats,
-                    priorityStats,
-                    weekdayDelay,
-                    weekTotalDelay,
-                    monthTotalDelay,
-                    ratingSummary,
-                ] = await Promise.all(responses.map((res) => res.json()));
+            const responses = await Promise.all(
+                endpoints.map((endpoint) => fetch(`${API_BASE}/${endpoint}?${query}`))
+            );
 
-                setData({
-                    kpis: kpis[0],
-                    weatherStats,
-                    vehicleStats,
-                    priorityStats,
-                    weekdayDelay,
-                    weekTotalDelay,
-                    monthTotalDelay,
-                    ratingSummary,
-                })
+            for (const res of responses) {
+                if (!res.ok) throw new Error("Failed to fetch dashboard data");
+            }
+
+            const [
+                kpis,
+                weatherStats,
+                vehicleStats,
+                priorityStats,
+                weekdayDelay,
+                weekTotalDelay,
+                monthTotalDelay,
+                ratingSummary,
+            ] = await Promise.all(responses.map((res) => res.json()));
+
+            setData({
+                kpis: kpis[0],
+                weatherStats,
+                vehicleStats,
+                priorityStats,
+                weekdayDelay,
+                weekTotalDelay,
+                monthTotalDelay,
+                ratingSummary,
+            })
             } catch(err) {
                 setError(err.message);
             }
         }
 
+    useEffect(() => {
         fetchDashboardData();
-
     }, []);
 
     if (error) return <main className="p-8 text-red-500">Error: {error}</main>;
@@ -176,6 +187,74 @@ export default function DashboardPage() {
             <p className="mb-5 text-sm text-slate-400">
                 Overview of delivery performance metrics.
             </p>
+
+
+            <div className="mb-6 flex items-end gap-4">
+                <div>
+                    <label className="mb-1 block text-sm text-slate-300">Start Date</label>
+
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
+                    />
+                </div>
+
+                <div>
+                    <label className="mb-1 block text-sm text-slate-300">
+                        End Date
+                    </label>
+
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
+                    />
+                </div>
+
+                <div>
+                    <label className="mb-1 block text-sm text-slate-3000">
+                        Traffic
+                    </label>
+
+                    <select
+                        value={traffic}
+                        onChange={(e) => setTraffic(e.target.value)}
+                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
+                    >
+                        <option value="">All</option>
+                        <option value="Light">Light</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Heavy">Heavy</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="mb-1 block text-sm text-slate-300">
+                        Priority
+                    </label>
+
+                    <select
+                        value={priority}
+                        onChange={(e) => setPriority(e.target.value)}
+                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200" 
+                    >
+                        <option value="">All</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Express">Express</option>
+                    </select>
+                </div>
+
+                <button
+                    onClick={fetchDashboardData}
+                    className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+                >Apply Filters
+                </button>
+                
+            </div>
+
 
             <section className="grid grid-cols-3 gap-4">
 
