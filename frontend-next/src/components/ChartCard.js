@@ -27,10 +27,17 @@ ChartJS.register(
     Legend
 );
 
-export default function ChartCard({ title, children, className = "" }) {
+export default function ChartCard({ 
+    title, 
+    children, 
+    className = "",
+    titleClassName = "",
+}) {
     return (
         <div className={`flex min-w-0 flex-col overflow-hidden rounded-2xl bg-slate-900 p-4 shadow ${className}`}>
-            <h2 className="mb-3 shrink-0 text-sm font-semibold text-slate-200">{title}</h2>
+            <h2 className={`mb-3 shrink-0 text-xl font-semibold text-slate-200 ${titleClassName}`}>
+                {title}
+            </h2>
             
             <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
                 {children}

@@ -183,82 +183,95 @@ export default function DashboardPage() {
 
     return (
         <main className="min-h-screen bg-slate-950 p-5 text-white">
-            <h1 className="mb-1 text-2xl font-bold">Delivery Performance Dashboard</h1>
-            <p className="mb-5 text-sm text-slate-400">
-                Overview of delivery performance metrics.
-            </p>
 
 
-            <div className="mb-6 flex items-end gap-4">
-                <div>
-                    <label className="mb-1 block text-sm text-slate-300">Start Date</label>
-
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
-                    />
-                </div>
+            <div className="mb-6 flex items-start justify-between">
 
                 <div>
-                    <label className="mb-1 block text-sm text-slate-300">
-                        End Date
-                    </label>
-
-                    <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
-                    />
+                    <h1 className="text-5xl font-bold">Delivery Performance Dashboard</h1>
+                    <p className="mt-2 text-lg text-slate-400">
+                        Overview of delivery performance metrics from January to June 2026.
+                    </p>
                 </div>
 
-                <div>
-                    <label className="mb-1 block text-sm text-slate-3000">
-                        Traffic
-                    </label>
 
-                    <select
-                        value={traffic}
-                        onChange={(e) => setTraffic(e.target.value)}
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
-                    >
-                        <option value="">All</option>
-                        <option value="Light">Light</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Heavy">Heavy</option>
-                    </select>
+                <div className="flex items-end gap-4 pb-5">
+                    <div>
+                        <label className="mb-1 block text-sm text-slate-300">Start Date</label>
+
+                        <input
+                            type="date"
+                            value={startDate}
+                            min="2026-01-01"
+                            max="2026-06-30"
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
+                        />
+                    </div>
+
+                    <div>
+    
+                        <label className="mb-1 block text-sm text-slate-300">
+                            End Date
+                        </label>
+
+                        <input
+                            type="date"
+                            value={endDate}
+                            min="2026-01-01"
+                            max="2026-06-30"
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm text-slate-3000">
+                            Traffic
+                        </label>
+
+                        <select
+                            value={traffic}
+                            onChange={(e) => setTraffic(e.target.value)}
+                            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200"
+                        >
+                            <option value="">All</option>
+                            <option value="Light">Light</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Heavy">Heavy</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm text-slate-300">
+                            Priority
+                        </label>
+
+                        <select
+                            value={priority}
+                            onChange={(e) => setPriority(e.target.value)}
+                            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200" 
+                        >
+                            <option value="">All</option>
+                            <option value="Standard">Standard</option>
+                            <option value="Express">Express</option>
+                        </select>
+                    </div>
+
+                    <button
+                        onClick={fetchDashboardData}
+                        className="rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700"
+                    >Apply Filters
+                    </button>
+                    
                 </div>
 
-                <div>
-                    <label className="mb-1 block text-sm text-slate-300">
-                        Priority
-                    </label>
-
-                    <select
-                        value={priority}
-                        onChange={(e) => setPriority(e.target.value)}
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200" 
-                    >
-                        <option value="">All</option>
-                        <option value="Standard">Standard</option>
-                        <option value="Express">Express</option>
-                    </select>
-                </div>
-
-                <button
-                    onClick={fetchDashboardData}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
-                >Apply Filters
-                </button>
-                
             </div>
 
+            
+            <section className="grid grid-cols-3 gap-5">
 
-            <section className="grid grid-cols-3 gap-4">
-
-                <KpiCard title="Total Deliveries" value={data.kpis.total_deliveries} />
+                <KpiCard title="Total Deliveries" value={new Intl.NumberFormat('en-US').format(data.kpis.total_deliveries)} />
                 <KpiCard title="Overall Median Delay" value={`${Number(data.kpis.median_delay_mins).toFixed(2)} mins`} />
                 <KpiCard title="On-Time Percentage" value={`${data.kpis.on_time_percentage}%`} />
 
@@ -328,10 +341,10 @@ export default function DashboardPage() {
                 />
                 </ChartCard>
 
-                <div className="col-span-3 grid h-[520px] grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)] gap-4">
+                <div className="col-span-3 grid h-[520px] grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)] gap-5">
 
-                    <div className="grid min-w-0 min-h-0 grid-rows-2 gap-4">
-                        <ChartCard title="Weekly Total Delay" className="min-h-0">
+                    <div className="grid min-w-0 min-h-0 grid-rows-2 gap-5">
+                        <ChartCard title="Total Weekly Delay" className="min-h-0" titleClassName="text-center">
                             <Line
                                 options={timeSeriesChartOptions}
                                 data={{
@@ -352,7 +365,7 @@ export default function DashboardPage() {
                         </ChartCard>
 
 
-                        <ChartCard title="Monthly Total Delay" className="min-h-0">
+                        <ChartCard title="Total Monthly Delay" className="min-h-0" titleClassName="text-center">
                             <Line
                                 options={timeSeriesChartOptions}
                                 data={{
@@ -373,7 +386,7 @@ export default function DashboardPage() {
                         </ChartCard>
                     </div>
 
-                    <ChartCard title="Average Driver Ratings" className="min-w-0 h-full">
+                    <ChartCard title="Average Driver Ratings" className="min-w-0 h-full" titleClassName="text-center">
                         <Bar
                             options={horizontalBarChartOptions}
                             data={{
@@ -405,9 +418,9 @@ export default function DashboardPage() {
 
 function KpiCard({ title,value }) {
     return (
-        <div className="flex flex-col justify-center items-end rounded-xl bg-slate-900 p-6 shadow">
-            <p className="order-1 text-sm text-slate-400">{title}</p>
-            <h2 className="order-2 mt-2 text-3xl font-bold">{value}</h2>
+        <div className="flex flex-col justify-center rounded-xl bg-slate-900 p-6 shadow">
+            <p className="mt-2 text-sm pb-2 tracking-wide uppercase text-slate-400">{title}</p>
+            <h2 className="text-5xl font-bold text-white">{value}</h2>
         </div>
     );
 }
