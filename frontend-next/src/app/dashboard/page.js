@@ -260,7 +260,7 @@ export default function DashboardPage() {
 
                     <button
                         onClick={fetchDashboardData}
-                        className="rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700"
+                        className="rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-900 active:bg-white active:text-indigo-600"
                     >Apply Filters
                     </button>
                     
