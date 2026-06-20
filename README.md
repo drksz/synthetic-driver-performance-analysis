@@ -2,6 +2,8 @@
 
 A full-stack analytics dashboard for visualizing synthetic delivery performance data. The application provides responsive KPIs and charts with support for date, traffic, and priority filtering.
 
+![Dashboard Preview](images/dashboard.png)
+
 ---
 
 # Tech Stack
@@ -281,18 +283,13 @@ http://localhost:3000
 
 # Features
 
-- Interactive KPI dashboard
+- Responsive Dashboard Visuals
 - Vehicle type distribution
-- Delay analysis by weekday
-- Delay analysis by weather condition
-- Weekly delay trend visualization
-- Monthly delay trend visualization
+- Delay analysis by weekday and weather condition
+- Weekly and Monthly delay trend visualization
 - Driver rating summary
-- Date range filtering
-- Traffic condition filtering
-- Delivery priority filtering
+- Date range, Traffic Condition, and Delivery Priority filtering
 - Redis response caching
-- Responsive dashboard layout
 
 ---
 
